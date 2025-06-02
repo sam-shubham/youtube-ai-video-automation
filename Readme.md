@@ -127,9 +127,7 @@ A powerful web application to automatically generate and upload engaging YouTube
 
 ## 📸 Screenshots
 
-![Dashboard](https://via.placeholder.com/800x400/242629/ffffff?text=Dashboard+View)
-![Video+Creation](https://via.placeholder.com/800x400/242629/ffffff?text=Video+Creation)
-![YouTube+Integration](https://via.placeholder.com/800x400/242629/ffffff?text=YouTube+Integration)
+![Dashboard](https://raw.githubusercontent.com/sam-shubham/youtube-ai-video-automation/refs/heads/main/preview.png)
 
 ## ⚠️ Important Notes
 
