@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>🤖 AI YouTube Shorts Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #7f5af8;
+        --primary-light: #9575ff;
+        --primary-dark: #6842e3;
+        --secondary: #2cb67d;
+        --background: #16161a;
+        --surface: #242629;
+        --surface-light: #303235;
+        --text: #fffffe;
+        --text-secondary: #94a1b2;
+        --error: #ef4565;
+        --warning: #ffc107;
+        --success: #2cb67d;
+        --border-radius: 12px;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --gradient: linear-gradient(90deg, var(--primary), #7f5af8);
+        --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --glow: 0 0 10px rgba(127, 90, 248, 0.5);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 24px;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+      }
+
+      /* Header & Dashboard */
+      .header {
+        background: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--surface-light);
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 6px;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 24px;
+      }
+
+      .status-card {
+        background: var(--surface-light);
+        border-radius: var(--border-radius);
+        padding: 24px;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .status-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--glow);
+      }
+
+      .status-card.connected {
+        border-left: 4px solid var(--success);
+      }
+      .status-card.disconnected {
+        border-left: 4px solid var(--error);
+      }
+      .status-card.processing {
+        border-left: 4px solid var(--warning);
+        animation: pulse 2s infinite;
+      }
+
+      .status-card h3 {
+        font-weight: 600;
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+
+      @keyframes pulse {
+        0% {
+          border-left-color: var(--warning);
+        }
+        50% {
+          border-left-color: #ffd54f;
+        }
+        100% {
+          border-left-color: var(--warning);
+        }
+      }
+
+      .channel-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .channel-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-light);
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 12px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--gradient);
+        transition: width 0.3s ease;
+        width: 0%;
+        border-radius: 20px;
+      }
+
+      /* Content Sections */
+      .content-section {
+        background: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--surface-light);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .content-section h2 {
+        font-size: 22px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .content-section p {
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      /* Form Elements */
+      .quick-create {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 24px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      label {
+        font-weight: 500;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 14px;
+        background: var(--surface-light);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        font-size: 15px;
+        color: var(--text);
+        transition: var(--transition);
+        outline: none;
+        font-family: inherit;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(127, 90, 248, 0.2);
+      }
+
+      input::placeholder {
+        color: var(--text-secondary);
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 14px 24px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 15px;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(127, 90, 248, 0.4);
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: white;
+      }
+      .btn-success:hover {
+        background: #25a06e;
+      }
+
+      .btn-warning {
+        background: var(--warning);
+        color: #212529;
+      }
+      .btn-warning:hover {
+        background: #e6ae06;
+      }
+
+      .btn-error {
+        background: var(--error);
+        color: white;
+      }
+      .btn-error:hover {
+        background: #d63b59;
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      .btn-icon {
+        padding: 10px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Grid Layouts */
+      .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+      }
+
+      .api-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+      }
+
+      /* API Cards */
+      .api-card {
+        background: var(--surface-light);
+        border-radius: var(--border-radius);
+        padding: 24px;
+        transition: var(--transition);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+      }
+
+      .api-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--card-shadow);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .api-card h3 {
+        margin-bottom: 12px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .method {
+        color: var(--primary-light);
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .badge {
+        background: var(--success);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+
+      .badge.super {
+        background: var(--primary);
+        box-shadow: 0 0 10px rgba(127, 90, 248, 0.5);
+      }
+
+      /* Code & Logs */
+      pre {
+        background: var(--surface);
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 13px;
+        margin: 16px 0;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        font-family: "SFMono-Regular", Consolas, Monaco, "Courier New",
+          monospace;
+      }
+
+      .logs {
+        background: var(--surface);
+        color: #61e786;
+        padding: 16px;
+        border-radius: 8px;
+        font-family: "SFMono-Regular", Consolas, Monaco, monospace;
+        font-size: 13px;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+      }
+
+      /* Setup Section */
+      .setup-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+
+      .api-links {
+        line-height: 2;
+      }
+
+      .api-links a {
+        color: var(--primary-light);
+        text-decoration: none;
+        transition: var(--transition);
+      }
+
+      .api-links a:hover {
+        color: var(--primary);
+        text-decoration: underline;
+      }
+
+      .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .system-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      /* Results Section */
+      .result-block {
+        background: var(--surface-light);
+        padding: 18px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+      }
+
+      .result-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      details {
+        background: var(--surface-light);
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+      }
+
+      summary {
+        cursor: pointer;
+        font-weight: 600;
+        user-select: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          padding: 16px;
+        }
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+        .quick-create {
+          grid-template-columns: 1fr;
+        }
+        .setup-grid {
+          grid-template-columns: 1fr;
+        }
+        .header {
+          padding: 24px;
+        }
+        .content-section {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>AI YouTube Shorts Generator</h1>
+        <p>Create stunning video content with a single prompt</p>
+
+        <div class="dashboard">
+          <div class="status-card" id="openai-status">
+            <h3>🧠 OpenAI</h3>
+            <div id="openai-indicator">Checking connection...</div>
+          </div>
+
+          <div class="status-card" id="youtube-status">
+            <h3>📺 YouTube</h3>
+            <div id="youtube-indicator">Checking connection...</div>
+            <div id="channel-info" class="channel-info hidden"></div>
+          </div>
+
+          <div class="status-card" id="progress-status">
+            <h3>⚙️ Processing</h3>
+            <div id="progress-indicator">Idle</div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div id="progress-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>🚀 Create Video</h2>
+        <p>
+          Enter a topic or idea and let AI generate a complete YouTube Short
+        </p>
+
+        <div class="quick-create">
+          <div class="form-group">
+            <label for="prompt">Video Prompt</label>
+            <input
+              type="text"
+              id="prompt"
+              placeholder="e.g., Python trick to sort arrays in one line"
+              autofocus
+            />
+          </div>
+          <button
+            class="btn btn-primary"
+            onclick="createVideo()"
+            id="create-btn"
+          >
+            🎬 Generate Video
+          </button>
+        </div>
+
+        <div class="options-grid">
+          <div class="form-group">
+            <label for="voice-type">🎤 Voice Type</label>
+            <select id="voice-type">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="conversational">Conversational</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="upload-youtube">📤 Upload to YouTube</label>
+            <select id="upload-youtube">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="privacy-status">🔒 Privacy Setting</label>
+            <select id="privacy-status">
+              <option value="private">Private</option>
+              <option value="unlisted">Unlisted</option>
+              <option value="public">Public</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="result-section" class="hidden" style="margin-top: 24px">
+          <h3 style="margin-bottom: 16px">✅ Video Created Successfully</h3>
+          <div id="result-content"></div>
+        </div>
+
+        <div id="logs" class="logs hidden"></div>
+      </div>
+
+      <div class="content-section">
+        <h2>📚 API Documentation</h2>
+        <p>
+          Use these endpoints to automate video creation with your applications
+        </p>
+
+        <div class="api-grid">
+          <div class="api-card">
+            <h3>
+              <span class="method">POST</span> /api/ai/create-video-from-prompt
+            </h3>
+            <span class="badge super">PREMIUM</span>
+            <p><strong>One-Prompt Video Creation</strong></p>
+            <p>
+              Transform any idea into a complete YouTube Short with just one API
+              call
+            </p>
+            <pre>
+{
+"prompt": "Python trick to sort an array",
+"uploadToYoutube": true,
+"autoPublish": false,
+"voiceType": "male",
+"voiceStyle": "conversational"
+}</pre
+            >
+            <button
+              class="btn btn-primary"
+              onclick="testEndpoint('/api/ai/create-video-from-prompt', 'POST')"
+            >
+              Test This API
+            </button>
+          </div>
+
+          <div class="api-card">
+            <h3>
+              <span class="method">POST</span> /api/ai/create-videos-batch
+            </h3>
+            <span class="badge super">BULK</span>
+            <p><strong>Batch Video Creation</strong></p>
+            <p>
+              Create multiple videos from an array of prompts with intelligent
+              queuing
+            </p>
+            <pre>
+{
+"prompts": [
+"Python sorting tricks",
+"JavaScript async explained",
+"CSS flexbox guide"
+],
+"uploadToYoutube": true,
+"delay": 30000
+}</pre
+            >
+            <button
+              class="btn btn-primary"
+              onclick="testEndpoint('/api/ai/create-videos-batch', 'POST')"
+            >
+              Test Batch API
+            </button>
+          </div>
+
+          <div class="api-card">
+            <h3><span class="method">GET</span> /api/ai/suggest-prompts</h3>
+            <span class="badge">AI-POWERED</span>
+            <p><strong>AI Prompt Suggestions</strong></p>
+            <p>Get AI-generated trending prompt ideas for your niche</p>
+            <pre>?category=programming&count=10</pre>
+            <button class="btn btn-primary" onclick="getPromptSuggestions()">
+              Get Ideas
+            </button>
+          </div>
+
+          <div class="api-card">
+            <h3><span class="method">POST</span> /api/generate-video</h3>
+            <span class="badge">STANDARD</span>
+            <p><strong>Standard Video Generation</strong></p>
+            <p>
+              Create videos with manual content input and full customization
+            </p>
+            <pre>
+{
+"title": "Python Tips",
+"content": "Learn Python...",
+"code": "print('Hello World')",
+"voiceType": "male"
+}</pre
+            >
+            <button
+              class="btn btn-primary"
+              onclick="testEndpoint('/api/generate-video', 'POST')"
+            >
+              Test Standard API
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h2>⚙️ Setup & Configuration</h2>
+        <p>Configure your API keys and connections</p>
+
+        <div class="setup-grid">
+          <div>
+            <h3 style="margin-bottom: 16px">🔑 Required API Keys</h3>
+            <ul class="api-links">
+              <li>
+                <strong>OpenAI:</strong>
+                <a href="https://platform.openai.com/api-keys" target="_blank"
+                  >Get API Key</a
+                >
+              </li>
+              <li>
+                <strong>Pixabay:</strong>
+                <a href="https://pixabay.com/api/docs/" target="_blank"
+                  >Get API Key</a
+                >
+              </li>
+              <li>
+                <strong>YouTube:</strong>
+                <a href="https://console.cloud.google.com/" target="_blank"
+                  >Google Cloud Console</a
+                >
+              </li>
+            </ul>
+
+            <h3 style="margin: 20px 0 16px">📝 Environment Variables</h3>
+            <pre>
+OPENAI_API_KEY=your_openai_key
+PIXABAY_API_KEY=your_pixabay_key
+YOUTUBE_CLIENT_ID=your_youtube_client_id
+YOUTUBE_CLIENT_SECRET=your_youtube_client_secret
+SESSION_SECRET=your_session_secret</pre
+            >
+          </div>
+
+          <div>
+            <h3 style="margin-bottom: 16px">🚀 Quick Actions</h3>
+            <div class="action-buttons">
+              <a
+                href="/auth/youtube"
+                target="_blank"
+                class="btn btn-warning"
+                id="auth-btn"
+              >
+                Connect YouTube Account
+              </a>
+
+              <button class="btn btn-primary" onclick="testConnections()">
+                Test All Connections
+              </button>
+
+              <button class="btn btn-primary" onclick="getChannelInfo()">
+                View Channel Statistics
+              </button>
+
+              <button class="btn btn-primary" onclick="getRecentVideos()">
+                View Recent Videos
+              </button>
+            </div>
+
+            <h3 style="margin: 20px 0 16px">📊 System Status</h3>
+            <div id="system-status">
+              <div class="system-item">
+                <span>Server Status</span>
+                <span class="badge">Running</span>
+              </div>
+              <div class="system-item">
+                <span>Node.js Version</span>
+                <span class="badge" id="node-version">-</span>
+              </div>
+              <div class="system-item">
+                <span>Platform</span>
+                <span class="badge" id="platform">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let isProcessing = false;
+
+      // Initialize dashboard
+      async function initDashboard() {
+        await updateAuthStatus();
+        startProgressMonitoring();
+        fetchSystemInfo();
+      }
+
+      // Fetch system information
+      async function fetchSystemInfo() {
+        try {
+          const response = await fetch("/api/system-info");
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("node-version").textContent =
+              data.nodeVersion || "-";
+            document.getElementById("platform").textContent =
+              data.platform || "-";
+          }
+        } catch (error) {
+          console.error("Error fetching system info:", error);
+        }
+      }
+
+      // Update authentication status
+      async function updateAuthStatus() {
+        try {
+          const response = await fetch("/api/auth-status");
+          const data = await response.json();
+
+          // OpenAI Status
+          const openaiCard = document.getElementById("openai-status");
+          const openaiIndicator = document.getElementById("openai-indicator");
+          if (data.openaiConnected) {
+            openaiCard.className = "status-card connected";
+            openaiIndicator.innerHTML = "✅ Connected";
+          } else {
+            openaiCard.className = "status-card disconnected";
+            openaiIndicator.innerHTML = "❌ Not Connected";
+          }
+
+          // YouTube Status
+          const youtubeCard = document.getElementById("youtube-status");
+          const youtubeIndicator = document.getElementById("youtube-indicator");
+          const channelInfo = document.getElementById("channel-info");
+
+          if (data.authenticated && data.channelInfo) {
+            youtubeCard.className = "status-card connected";
+            youtubeIndicator.innerHTML = "✅ Connected";
+
+            channelInfo.innerHTML =
+              '<img src="' +
+              (data.channelInfo.thumbnailUrl ||
+                "https://via.placeholder.com/40") +
+              '" alt="Channel" class="channel-avatar" />' +
+              "<div>" +
+              '<div style="font-weight: 600;">' +
+              data.channelInfo.title +
+              "</div>" +
+              '<div style="font-size: 12px; color: var(--text-secondary);">' +
+              parseInt(data.channelInfo.subscriberCount).toLocaleString() +
+              " subscribers" +
+              "</div>" +
+              "</div>";
+            channelInfo.classList.remove("hidden");
+
+            document.getElementById("auth-btn").innerHTML =
+              "✅ YouTube Connected";
+            document.getElementById("auth-btn").className = "btn btn-success";
+          } else {
+            youtubeCard.className = "status-card disconnected";
+            youtubeIndicator.innerHTML = "❌ Not Connected";
+            channelInfo.classList.add("hidden");
+          }
+        } catch (error) {
+          console.error("Error updating auth status:", error);
+        }
+      }
+
+      // Monitor progress
+      function startProgressMonitoring() {
+        setInterval(async () => {
+          try {
+            const response = await fetch("/api/progress");
+            const progress = await response.json();
+            updateProgressDisplay(progress);
+          } catch (error) {
+            console.error("Error fetching progress:", error);
+          }
+        }, 2000);
+      }
+
+      function updateProgressDisplay(progress) {
+        const card = document.getElementById("progress-status");
+        const indicator = document.getElementById("progress-indicator");
+        const fill = document.getElementById("progress-fill");
+        const text = document.getElementById("progress-text");
+
+        if (progress.isProcessing) {
+          card.className = "status-card processing";
+          indicator.innerHTML = "⚙️ Processing...";
+
+          const percentage = Math.round(
+            (progress.progress / progress.totalSteps) * 100
+          );
+          fill.style.width = percentage + "%";
+          text.innerHTML = `${progress.currentTask} (${progress.progress}/${progress.totalSteps})`;
+
+          isProcessing = true;
+        } else {
+          card.className = "status-card connected";
+          indicator.innerHTML = "✅ Idle";
+          fill.style.width = "0%";
+          text.innerHTML = `Completed: ${progress.completedVideos} videos`;
+
+          isProcessing = false;
+        }
+      }
+
+      // Create video from prompt
+      async function createVideo() {
+        const prompt = document.getElementById("prompt").value.trim();
+        if (!prompt) {
+          alert("Please enter a prompt");
+          return;
+        }
+
+        const btn = document.getElementById("create-btn");
+        const originalText = btn.innerHTML;
+
+        btn.disabled = true;
+        btn.innerHTML = "⏳ Processing...";
+
+        showLogs();
+        logMessage("🚀 Starting video creation...");
+
+        try {
+          const requestData = {
+            prompt: prompt,
+            voiceType: document.getElementById("voice-type").value,
+            uploadToYoutube:
+              document.getElementById("upload-youtube").value === "true",
+            privacyStatus: document.getElementById("privacy-status").value,
+          };
+
+          logMessage(`📝 Prompt: "${prompt}"`);
+          logMessage("🧠 Generating AI content...");
+
+          const response = await fetch("/api/ai/create-video-from-prompt", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            logMessage("✅ Video created successfully!");
+            showResult(result);
+          } else {
+            logMessage("❌ Error: " + result.error);
+            alert("Error: " + result.error);
+          }
+        } catch (error) {
+          logMessage("❌ Network error: " + error.message);
+          alert("Error: " + error.message);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+        }
+      }
+
+      function showResult(result) {
+        const section = document.getElementById("result-section");
+        const content = document.getElementById("result-content");
+
+        content.innerHTML = `
+                <div class="result-block">
+                    <div><strong>📹 Video ID:</strong> ${result.videoId}</div>
+                    <div><strong>⏱️ Processing Time:</strong> ${
+                      result.processingTime
+                    }</div>
+                    <div><strong>🎬 Title:</strong> ${
+                      result.aiGenerated.metadata.title
+                    }</div>
+                </div>
+                
+                <div class="result-actions">
+                    <a href="${
+                      result.downloadUrl
+                    }" target="_blank" class="btn btn-primary" aria-label="Download video">
+                        📥 Download Video
+                    </a>
+                    ${
+                      result.youtube && result.youtube.success
+                        ? `<a href="${result.youtube.videoUrl}" target="_blank" class="btn btn-success" aria-label="View on YouTube">
+                            📺 View on YouTube
+                        </a>`
+                        : ""
+                    }
+                </div>
+                
+                <details>
+                    <summary>📊 AI Generated Details</summary>
+                    <div style="margin-top: 12px; color: var(--text-secondary);">
+                        <div><strong>Language:</strong> ${
+                          result.aiGenerated.language
+                        }</div>
+                        <div><strong>Complexity:</strong> ${
+                          result.aiGenerated.complexity
+                        }</div>
+                        <div><strong>Background Query:</strong> ${
+                          result.aiGenerated.backgroundQuery
+                        }</div>
+                        <div><strong>Tags:</strong> ${result.aiGenerated.metadata.tags.join(
+                          ", "
+                        )}</div>
+                    </div>
+                </details>
+            `;
+
+        section.classList.remove("hidden");
+      }
+
+      function showLogs() {
+        const logs = document.getElementById("logs");
+        logs.classList.remove("hidden");
+        logs.innerHTML = "";
+      }
+
+      function logMessage(message) {
+        const logs = document.getElementById("logs");
+        const timestamp = new Date().toLocaleTimeString();
+        logs.innerHTML += `[${timestamp}] ${message}\n`;
+        logs.scrollTop = logs.scrollHeight;
+      }
+
+      // Get prompt suggestions
+      async function getPromptSuggestions() {
+        showLogs();
+        logMessage("🔍 Getting AI prompt suggestions...");
+
+        try {
+          const response = await fetch(
+            "/api/ai/suggest-prompts?category=programming&count=5"
+          );
+          const data = await response.json();
+
+          if (data.success) {
+            logMessage("✅ Received suggestions:");
+            data.prompts.forEach((prompt) => {
+              logMessage(`➡️ ${prompt}`);
+            });
+          } else {
+            logMessage("❌ Error: " + data.error);
+          }
+        } catch (error) {
+          logMessage("❌ Error getting suggestions: " + error.message);
+        }
+      }
+
+      // Test connections
+      async function testConnections() {
+        showLogs();
+        logMessage("🧪 Testing all connections...");
+
+        try {
+          // Test OpenAI
+          logMessage("🧠 Testing OpenAI connection...");
+          const openaiResponse = await fetch("/api/test-openai");
+          const openaiResult = await openaiResponse.json();
+          logMessage(
+            openaiResult.success ? "✅ OpenAI: Connected" : "❌ OpenAI: Failed"
+          );
+
+          // Test YouTube
+          logMessage("📺 Testing YouTube connection...");
+          await updateAuthStatus();
+
+          logMessage("✅ Connection test completed!");
+        } catch (error) {
+          logMessage("❌ Connection test failed: " + error.message);
+        }
+      }
+
+      // Test endpoint function
+      function testEndpoint(endpoint, method) {
+        showLogs();
+        logMessage(`Testing ${method} ${endpoint}...`);
+        logMessage("Please implement this in your application");
+        logMessage("See documentation for request format and parameters");
+      }
+
+      // Get channel info
+      async function getChannelInfo() {
+        showLogs();
+        logMessage("📊 Fetching channel statistics...");
+
+        try {
+          const response = await fetch("/api/youtube/channel");
+          const data = await response.json();
+
+          if (data.error) {
+            logMessage("❌ " + data.error);
+            return;
+          }
+
+          logMessage("✅ Channel statistics:");
+          logMessage(`📺 Channel: ${data.title}`);
+          logMessage(
+            `👥 Subscribers: ${parseInt(data.subscriberCount).toLocaleString()}`
+          );
+          logMessage(`🎬 Videos: ${data.videoCount}`);
+          logMessage(
+            `👁️ Total Views: ${parseInt(data.viewCount).toLocaleString()}`
+          );
+        } catch (error) {
+          logMessage("❌ Error: " + error.message);
+        }
+      }
+
+      // Get recent videos
+      async function getRecentVideos() {
+        showLogs();
+        logMessage("🎬 Fetching recent videos...");
+
+        try {
+          const response = await fetch("/api/youtube/videos");
+          const data = await response.json();
+
+          if (data.error) {
+            logMessage("❌ " + data.error);
+            return;
+          }
+
+          if (data.videos && data.videos.length > 0) {
+            logMessage(`✅ Found ${data.videos.length} videos:`);
+            data.videos.forEach((video, index) => {
+              logMessage(`${index + 1}. ${video.title} - ${video.url}`);
+            });
+          } else {
+            logMessage("ℹ️ No videos found");
+          }
+        } catch (error) {
+          logMessage("❌ Error: " + error.message);
+        }
+      }
+
+      // Initialize dashboard when page loads
+      document.addEventListener("DOMContentLoaded", initDashboard);
+
+      // Refresh auth status every 30 seconds
+      setInterval(updateAuthStatus, 30000);
+
+      // Handle Enter key in prompt field
+      document
+        .getElementById("prompt")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            createVideo();
+          }
+        });
+    </script>
+  </body>
+</html>
