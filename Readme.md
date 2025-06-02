@@ -2,7 +2,7 @@
 
 A powerful web application to automatically generate and upload engaging YouTube Shorts with AI-generated content, professional voiceovers, and beautiful visuals - all from a single prompt.
 
-![YouTubeShorts AI Generator Banner](https://via.placeholder.com/1200x300/7f5af8/ffffff?text=YouTubeShorts+AI+Generator)
+![YouTubeShorts AI Generator Banner](https://raw.githubusercontent.com/sam-shubham/youtube-ai-video-automation/refs/heads/main/preview.png)
 
 ## ✨ Features
 
